@@ -3,17 +3,21 @@ from aif360.datasets import AdultDataset
 from aif360.metrics import BinaryLabelDatasetMetric
 from aif360.metrics import ClassificationMetric
 from aif360.algorithms.preprocessing.optim_preproc_helpers.data_preproc_functions import load_preproc_data_adult
-from aif360.algorithms.inprocessing import AdversarialDebiasing, PrejudiceRemover, ARTClassifier
+from aif360.algorithms.inprocessing import AdversarialDebiasing, PrejudiceRemover
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score
+
+from data import preprocessed_data
 
 import tensorflow as tf
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 # load preprocessed dataset
-data = load_preproc_data_adult()
+# data = load_preproc_data_adult()
+
+data = preprocessed_data
 
 # define priviledged and unpriviledged groups
 # for this dataset, the protected attribute is sex
@@ -32,37 +36,35 @@ fit_adversarial_model = adversarial_model.fit(train)
 train_adversarial = adversarial_model.predict(train)
 test_adversarial = adversarial_model.predict(test)
 
-# compute accuracy based on the debiased model
+# compute accuracy and fairness metrics based on the debiased model
 metric_adversarial = ClassificationMetric(test, test_adversarial, unprivileged_groups, privileged_groups)
-accuracy_adversarial = metric_adversarial.accuracy()
-print("Classification accuracy of adversarial debiasing = {:.2f}%".format(accuracy_adversarial * 100))
-
-adv_di = metric_adversarial.disparate_impact()
-adv_eod = metric_adversarial.equal_opportunity_difference()
-adv_aod = metric_adversarial.average_odds_difference()
-adv_theil = metric_adversarial.theil_index()
-print("Disparate impact = {}".format(adv_di))
-print("Equal Opportunity Difference = {}".format(adv_eod))
-print("Average Odds Difference = {}".format(adv_aod))
-print("Theil index = {}".format(adv_theil))
+print("Classification accuracy of adversarial debiasing = {:.2f}%".format(metric_adversarial.accuracy() * 100))
+print()
+print("Fairness metrics:")
+print("Disparate impact = {}".format(metric_adversarial.disparate_impact()))
+print("Equal Opportunity Difference = {}".format(metric_adversarial.equal_opportunity_difference()))
+print("Average Odds Difference = {}".format(metric_adversarial.average_odds_difference()))
+print("Theil index = {}".format(metric_adversarial.theil_index()))
 print()
 
-
+# apply prejudice remover algorithm
 prejudice_model = PrejudiceRemover(eta=10, sensitive_attr='sex')
-
 fit_prejudice_model = prejudice_model.fit(train)
-train_prejudice = prejudice_model.predict(train)
 
+# predict outcome using the fitted model
+train_prejudice = prejudice_model.predict(train)
 test_prejudice = prejudice_model.predict(test)
 
-# print(test.features.shape)
-print(test_prejudice.features)
+# compute accuracy
+metric_prejudice = BinaryLabelDatasetMetric(test_prejudice, unprivileged_groups, privileged_groups)
+accuracy_prejudice = accuracy_score(y_true = test.labels, y_pred = test_prejudice.labels)
+print("Classification accuracy of prejudice remover = {:.2f}%".format(accuracy_prejudice * 100))
+print()
+print("Fairness metrics:")
+print('Disparate impact = {}'.format(metric_prejudice.disparate_impact()))
 
-# accuracy_prejudice = accuracy_score(y_true = test.labels, y_pred = test_prejudice.labels)
-# print("Classification accuracy of prejudice remover = {:.2f}%".format(accuracy_prejudice * 100))
-
-
-metric_prejudice = ClassificationMetric(test, test_prejudice.features, unprivileged_groups, privileged_groups)
-print('{}'.format(metric_prejudice.disparate_impact()))
-print('{}'.format(metric_prejudice.equal_opportunity_difference()))
+# metric_prejudice = ClassificationMetric(test, test_prejudice, unprivileged_groups, privileged_groups)
+# print('Equal Opportunity Difference = {}'.format(metric_prejudice.equal_opportunity_difference()))
+# print('Average Odds Difference = {}'.format(metric_prejudice.average_odds_difference()))
+# print('Theil index = {}'.format(metric_prejudice.theil_index()))
 
