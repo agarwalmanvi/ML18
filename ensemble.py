@@ -47,6 +47,22 @@ print("Average Odds Difference = {}".format(metric_adversarial.average_odds_diff
 print("Theil index = {}".format(metric_adversarial.theil_index()))
 print()
 
+plainNN_model = AdversarialDebiasing(privileged_groups, unprivileged_groups, scope_name='non-debiased_classifier', debias=False, sess=sess)
+fit_plain_model = plainNN_model.fit(train)
+
+train_plainNNmodel = plainNN_model.predict(train)
+test_plainNNmodel = plainNN_model.predict(test)
+
+metric_adversarial = ClassificationMetric(test, test_adversarial, unprivileged_groups, privileged_groups)
+print("Classification accuracy of a non-debiased algorithm = {:.2f}%".format(metric_adversarial.accuracy() * 100))
+print()
+print("Fairness metrics:")
+print("Disparate impact = {}".format(metric_adversarial.disparate_impact()))
+print("Equal Opportunity Difference = {}".format(metric_adversarial.equal_opportunity_difference()))
+print("Average Odds Difference = {}".format(metric_adversarial.average_odds_difference()))
+print("Theil index = {}".format(metric_adversarial.theil_index()))
+print()
+
 # apply prejudice remover algorithm
 prejudice_model = PrejudiceRemover(eta=10, sensitive_attr='sex')
 fit_prejudice_model = prejudice_model.fit(train)

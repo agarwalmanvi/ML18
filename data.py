@@ -4,7 +4,7 @@ from aif360.datasets import AdultDataset
 import pandas as pd
 import csv
 import sys
-from custom_preprocessing import custom_preprocessing
+# from custom_preprocessing import custom_preprocessing
 
 adult_data = pd.read_csv('dataset/adult.csv')
 
