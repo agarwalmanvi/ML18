@@ -1,35 +1,52 @@
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
+
 from sklearn.metrics import accuracy_score
 from scipy.stats import mode
 import pandas as pd
 import numpy as np
+import os
+import errno
 
 from preprocess import preprocess_data
 from adversarial_debiasing import adversarial
 from prejudice_remover import prejudice
 from neuralnet import nondebiased_classifier
 
-import tensorflow as tf
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-import warnings
-warnings.filterwarnings("ignore", category=FutureWarning)
 
+def write_to_csv(df, predicted, filename):
+    output, _ = df.convert_to_dataframe()
 
-# append the classified labels into the input data and save it as a csv file
-def save_output(input, predicted, filename):
-    output, _ = input.convert_to_dataframe()
-
-    if filename == 'output/output_ensemble.csv':
+    if filename == 'output/adult/output_ensemble.csv' or filename == 'output/compas/output_ensemble.csv' or filename == 'output/german/output_ensemble.csv':
         output['labels'] = predicted
     else:
         output['labels'] = predicted.labels
 
     output.to_csv(filename)
 
+# define protected attributes based on the data set
+def protected_attributes(data, args):
+    if data == 'adult' or data == 'compas':
+        if args == 1:
+            privileged_groups = [{'sex': 1}]
+            unprivileged_groups = [{'sex': 0}]
+        else:
+            privileged_groups = [{'race': 1}]
+            unprivileged_groups = [{'race': 0}]
+    
+    if data == 'german':
+        if args == 1:
+            privileged_groups = [{'sex': 1}]
+            unprivileged_groups = [{'sex': 0}]
+        else:
+            privileged_groups = [{'age': 1}]
+            unprivileged_groups = [{'age': 0}]
+    
+    return privileged_groups, unprivileged_groups
+
 def make_predictions(train, test):
     # define priviledged and unpriviledged groups
-    privileged_groups = [{'sex': 1}]
-    unprivileged_groups = [{'sex': 0}]
+    privileged_groups, unprivileged_groups = protected_attributes('adult', 1)
 
     # apply the 3 classifiers
     pred_adversarial = adversarial(train, test, privileged_groups, unprivileged_groups)
@@ -56,26 +73,66 @@ def calculate_accuracy(test, test_adversarial, test_prejudice, test_nondebiased,
     print("Classification accuracy of non-debiasing classifier = {:.2f}%".format(accuracy_nondebiased * 100))
     print("Classification accuracy of ensemble classifier = {:.2f}%".format(accuracy_ensemble * 100))
 
-def main():
-    # load preprocessed dataset
-    dataset = pd.read_csv('dataset/adult.csv')
-    preproc_data = preprocess_data(dataset)
 
-    # split dataset into training and testing set with a fraction 70/30
-    data, _ = preproc_data.split([0.5], shuffle=True)
-    train, test = data.split([0.7], shuffle=True)
+def main():
+    # load dataset
+    data1 = pd.read_csv('dataset/adult.csv')
+    data2 = pd.read_csv('dataset/compas-scores-two-years.csv')
+    data3 = pd.read_csv('dataset/german_credit.csv')
+
+    # preprocessing
+    preproc_data1 = preprocess_data(data1, 'adult')
+    preproc_data2 = preprocess_data(data2, 'compas')
+    preproc_data3 = preprocess_data(data3, 'german')
+
+    # split dataset into training and testing set with a fraction of 70/30
+    data_split, _ = preproc_data1.split([0.5], shuffle=True)
+    train1, test1 = data_split.split([0.7], shuffle=True)
+    train2, test2 = preproc_data2.split([0.7], shuffle=True)
+    train3, test3 = preproc_data3.split([0.7], shuffle=True)
 
     # perform classification
-    pred_adversarial, pred_prejudice, pred_nondebiased, final_pred = make_predictions(train, test)
-
-    # save output to csv files
-    save_output(test, pred_adversarial, 'output/output_adversarial.csv')
-    save_output(test, pred_prejudice, 'output/output_prejudice.csv')
-    save_output(test, pred_nondebiased, 'output/output_nondebiased.csv')
-    save_output(test, final_pred, 'output/output_ensemble.csv')
+    pred_adversarial1, pred_prejudice1, pred_nondebiased1, final_pred1 = make_predictions(train1, test1)
+    pred_adversarial2, pred_prejudice2, pred_nondebiased2, final_pred2 = make_predictions(train2, test2)
+    pred_adversarial3, pred_prejudice3, pred_nondebiased3, final_pred3 = make_predictions(train3, test3)
 
     # calculate classification accuracy
-    calculate_accuracy(test, pred_adversarial, pred_prejudice, pred_nondebiased, final_pred)
+    print()
+    print('       Classification using Adult dataset')
+    calculate_accuracy(test1, pred_adversarial1, pred_prejudice1, pred_nondebiased1, final_pred1)
+    print()
+
+    print('       Classification using Compas dataset')
+    calculate_accuracy(test2, pred_adversarial2, pred_prejudice2, pred_nondebiased2, final_pred2)
+    print()
+
+    print('      Classification using German dataset')
+    calculate_accuracy(test3, pred_adversarial3, pred_prejudice3, pred_nondebiased3, final_pred3)
+    print()
+
+    # save output to csv files
+    try:
+        os.makedirs('output/adult')
+        os.makedirs('output/compas')
+        os.makedirs('output/german')
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            pass
+
+    write_to_csv(test1, pred_adversarial1, 'output/adult/output_adversarial.csv')
+    write_to_csv(test1, pred_prejudice1, 'output/adult/output_prejudice.csv')
+    write_to_csv(test1, pred_nondebiased1, 'output/adult/output_nondebiased.csv')
+    write_to_csv(test1, final_pred1, 'output/adult/output_ensemble.csv')
+
+    write_to_csv(test2, pred_adversarial2, 'output/compas/output_adversarial.csv')
+    write_to_csv(test2, pred_prejudice2, 'output/compas/output_prejudice.csv')
+    write_to_csv(test2, pred_nondebiased2, 'output/compas/output_nondebiased.csv')
+    write_to_csv(test2, final_pred2, 'output/compas/output_ensemble.csv')
+
+    write_to_csv(test3, pred_adversarial3, 'output/german/output_adversarial.csv')
+    write_to_csv(test3, pred_prejudice3, 'output/german/output_prejudice.csv')
+    write_to_csv(test3, pred_nondebiased3, 'output/german/output_nondebiased.csv')
+    write_to_csv(test3, final_pred3, 'output/german/output_ensemble.csv')
 
 
 if __name__ == "__main__":
