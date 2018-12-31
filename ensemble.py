@@ -78,15 +78,15 @@ def calculate_accuracy(test, test_adversarial, test_prejudice, test_nondebiased,
 
 def main():
     # load dataset
-    # data1 = pd.read_csv('dataset/adult.csv')
+    data1 = pd.read_csv('dataset/adult.csv')
     data2 = pd.read_csv('dataset/compas-scores-two-years.csv')
     data3 = pd.read_csv('dataset/german_credit.csv')
 
-    # preprocessing
-    # preproc_data1 = preprocess_data(data1, 'adult')
-
     # QUICK FIX
-    preproc_data1 = load_preproc_data_adult()
+    # preproc_data1 = load_preproc_data_adult()
+    
+    # preprocessing
+    preproc_data1 = preprocess_data(data1, 'adult')
     preproc_data2 = preprocess_data(data2, 'compas')
     preproc_data3 = preprocess_data(data3, 'german')
 

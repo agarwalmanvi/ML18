@@ -3,11 +3,12 @@ import pandas as pd
 import numpy as np
 
 def preprocess_adultdataset(df):
-    df['Age'] = df['age'].apply(lambda x: x//100)
-    df['Age'] = df['Age'].apply(lambda x: '>=70' if x >= 70 else x)
+    df['Age'] = df['age'].apply(lambda x: x//10*10)
 
     df['Education_years'] = df['education.num'].apply(lambda x: '<6' if x <= 5 else ('>12' if x >= 13 else x))
     df['Education_years'] = df['Education_years'].astype('category')
+
+    df['Age'] = df['Age'].apply(lambda x: '>=70' if x >= 70 else x)
 
     df['sex'] = df['sex'].replace({'Female': 0.0, 'Male': 1.0})
     df['race'] = df['race'].apply(lambda x: 1.0 if x == 'White' else 0.0)
@@ -27,7 +28,7 @@ def preprocess_adultdataset(df):
                             categorical_features=categorical_features,
                             features_to_keep=features,
                             metadata={'label_map': [{1.0: '>50K', 0.0: '<=50K'}],
-                                      'protected_attribute_map': [protected_attribute_map[x] for x in protected_attribute]})
+                                        'protected_attribute_map': [protected_attribute_map[x] for x in protected_attribute]})
     return data
 
 
