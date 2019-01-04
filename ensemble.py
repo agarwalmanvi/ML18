@@ -9,7 +9,7 @@ import os
 import errno
 
 from aif360.metrics import BinaryLabelDatasetMetric
-from aif360.algorithms.preprocessing.optim_preproc_helpers.data_preproc_functions import load_preproc_data_adult
+# from aif360.algorithms.preprocessing.optim_preproc_helpers.data_preproc_functions import load_preproc_data_adult
 
 from preprocess import preprocess_data
 from adversarial_debiasing import adversarial
@@ -43,10 +43,7 @@ def protected_attributes(data, args):
     
     return privileged_groups, unprivileged_groups
 
-def make_predictions(train, test):
-    # define priviledged and unpriviledged groups
-    privileged_groups, unprivileged_groups = protected_attributes('adult', 1)
-
+def make_predictions(train, test, privileged_groups, unprivileged_groups):
     # apply the 3 classifiers
     pred_adversarial = adversarial(train, test, privileged_groups, unprivileged_groups)
     pred_prejudice = prejudice(train, test)
@@ -82,23 +79,20 @@ def main():
     data2 = pd.read_csv('dataset/compas-scores-two-years.csv')
     data3 = pd.read_csv('dataset/german_credit.csv')
 
+    # define priviledged and unpriviledged groups
+    privileged_groups1, unprivileged_groups1 = protected_attributes('adult', 1)
+    privileged_groups2, unprivileged_groups2 = protected_attributes('compas', 1)
+    privileged_groups3, unprivileged_groups3 = protected_attributes('german', 1)
+
     # preprocessing
-    preproc_data1 = preprocess_data(data1, 'adult')
-    preproc_data2 = preprocess_data(data2, 'compas')
-    preproc_data3 = preprocess_data(data3, 'german')
-
-    # preproc_data1 = load_preproc_data_adult()
-
-    # split dataset into training and testing set with a fraction of 70/30
-    data_split, _ = preproc_data1.split([0.5], shuffle=True)
-    train1, test1 = data_split.split([0.7], shuffle=True)
-    train2, test2 = preproc_data2.split([0.7], shuffle=True)
-    train3, test3 = preproc_data3.split([0.7], shuffle=True)
+    train1, test1 = preprocess_data(data1, unprivileged_groups1, privileged_groups1, 'adult')
+    train2, test2 = preprocess_data(data2, unprivileged_groups2, privileged_groups2, 'compas')
+    train3, test3 = preprocess_data(data3, unprivileged_groups3, privileged_groups3, 'german')
 
     # perform classification
-    pred_adversarial1, pred_prejudice1, pred_nondebiased1, pred_ensemble1 = make_predictions(train1, test1)
-    pred_adversarial2, pred_prejudice2, pred_nondebiased2, pred_ensemble2 = make_predictions(train2, test2)
-    pred_adversarial3, pred_prejudice3, pred_nondebiased3, pred_ensemble3 = make_predictions(train3, test3)
+    pred_adversarial1, pred_prejudice1, pred_nondebiased1, pred_ensemble1 = make_predictions(train1, test1, privileged_groups1, unprivileged_groups1)
+    pred_adversarial2, pred_prejudice2, pred_nondebiased2, pred_ensemble2 = make_predictions(train2, test2, privileged_groups2, unprivileged_groups2)
+    pred_adversarial3, pred_prejudice3, pred_nondebiased3, pred_ensemble3 = make_predictions(train3, test3, privileged_groups3, unprivileged_groups3)
 
     # calculate classification accuracy
     print()
