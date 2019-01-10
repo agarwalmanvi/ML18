@@ -354,6 +354,7 @@ def run_trial():
             writer.writerows(sublist)
 
             
+run_trial()
             
             
             
