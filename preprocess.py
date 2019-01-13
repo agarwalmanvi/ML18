@@ -1,8 +1,10 @@
 from aif360.datasets import StandardDataset
 from aif360.algorithms.preprocessing.reweighing import Reweighing
-from aif360.algorithms.preprocessing.optim_preproc_helpers.data_preproc_functions import load_preproc_data_adult
+from aif360.algorithms.preprocessing.optim_preproc_helpers.data_preproc_functions import load_preproc_data_adult, load_preproc_data_compas, load_preproc_data_german
 import pandas as pd
 import numpy as np
+import copy
+from copy import deepcopy
 
 def preprocess_adultdataset(df):
     df['Age'] = df['age'].apply(lambda x: x//10*10)
@@ -29,8 +31,8 @@ def preprocess_adultdataset(df):
                             privileged_classes=[privileged_class[x] for x in protected_attribute],
                             categorical_features=categorical_features,
                             features_to_keep=features,
-                            metadata={'label_map': [{1.0: '>50K', 0.0: '<=50K'}],
-                                        'protected_attribute_map': [protected_attribute_map[x] for x in protected_attribute]})
+                            metadata={'label_maps': [{1.0: '>50K', 0.0: '<=50K'}],
+                                        'protected_attribute_maps': [protected_attribute_map[x] for x in protected_attribute]})
     return data
 
 
@@ -162,6 +164,36 @@ def preprocess_compasdataset(df):
 
     return data
 
+def reweighing_data(train, unprivileged_group, privileged_group):
+    RW = Reweighing(unprivileged_groups=unprivileged_group, privileged_groups=privileged_group)
+    RW.fit(train)
+    train_transformed = RW.transform(train)
+
+    # change weights to whole numbers
+    for i in range(train_transformed.instance_weights.size):
+        train_transformed.instance_weights[i] = (round(train_transformed.instance_weights[i] / 0.1) * 0.1) * 10
+        weights = copy.deepcopy(train_transformed.instance_weights)
+
+    # change train_transformed.features and train_transformed.labels and train_transformed.protected_attributes according to the weights of each instance
+    # sum_weights = 0
+    for i in range(train_transformed.features.shape[0]):
+        row = copy.deepcopy(train_transformed.features[i])
+        row_label = copy.deepcopy(train_transformed.labels[i])
+        row_protected_attributes = copy.deepcopy(train_transformed.protected_attributes[i])
+        row_protected_attributes.resize(1,2)
+        row.resize(1,train_transformed.features.shape[1])
+        row_label.resize(1,1)
+        weight = int(weights[i])
+        for j in range(weight-1):
+            train_transformed.features = np.concatenate((train_transformed.features,row))
+            train_transformed.labels = np.concatenate((train_transformed.labels,row_label))
+            train_transformed.protected_attributes = np.concatenate((train_transformed.protected_attributes,row_protected_attributes))
+
+    # change the train_transformed to a numpy array of ones to match number of rows in features
+    train_transformed.instance_weights = np.ones(train_transformed.features.shape[0])
+
+    return train_transformed
+
 def preprocess_data(df, unprivileged_group, privileged_group, name):
     if name == 'adult':
         data = preprocess_adultdataset(df)
@@ -171,9 +203,6 @@ def preprocess_data(df, unprivileged_group, privileged_group, name):
         data = preprocess_germandataset(df)
     
     train, test = data.split([0.7], shuffle=True)
-
-    RW = Reweighing(unprivileged_groups=unprivileged_group, privileged_groups=privileged_group)
-    RW.fit(train)
-    train_transformed = RW.transform(train)
+    train_transformed = reweighing_data(train, unprivileged_group, privileged_group)
 
     return train_transformed, test
