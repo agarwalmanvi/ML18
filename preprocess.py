@@ -175,7 +175,6 @@ def reweighing_data(train, unprivileged_group, privileged_group):
         weights = copy.deepcopy(train_transformed.instance_weights)
 
     # change train_transformed.features and train_transformed.labels and train_transformed.protected_attributes according to the weights of each instance
-    # sum_weights = 0
     for i in range(train_transformed.features.shape[0]):
         row = copy.deepcopy(train_transformed.features[i])
         row_label = copy.deepcopy(train_transformed.labels[i])

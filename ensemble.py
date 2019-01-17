@@ -8,8 +8,7 @@ import numpy as np
 import os
 import errno
 
-from aif360.metrics import BinaryLabelDatasetMetric
-# from aif360.algorithms.preprocessing.optim_preproc_helpers.data_preproc_functions import load_preproc_data_adult
+from aif360.metrics import BinaryLabelDatasetMetric, ClassificationMetric
 
 from preprocess import preprocess_data
 from adversarial_debiasing import adversarial
@@ -72,6 +71,33 @@ def calculate_accuracy(test, pred_adversarial, pred_prejudice, pred_nondebiased,
     print("Classification accuracy of non-debiasing classifier = {:.2f}%".format(accuracy_nondebiased * 100))
     print("Classification accuracy of ensemble classifier = {:.2f}%".format(accuracy_ensemble * 100))
 
+    # accuracy = [accuracy_adversarial, accuracy_prejudice, accuracy_nondebiased, accuracy_ensemble]
+
+    # return accuracy
+
+def fairness_metrics(test, pred, unprivileged_groups, privileged_groups, opt=False):
+    metric1 = BinaryLabelDatasetMetric(pred, unprivileged_groups=unprivileged_groups, privileged_groups=privileged_groups)
+    metric2 = ClassificationMetric(test, pred, unprivileged_groups=unprivileged_groups, privileged_groups=privileged_groups)
+
+    print("Mean difference = {}".format(metric1.mean_difference()))
+    print("Disparate impact = {}".format(metric2.disparate_impact()))
+
+    if opt == True:
+        print("Equal Opportunity Difference = {}".format(np.nan))
+        print("Average Odds Difference = {}".format(np.nan))
+    else:
+        print("Equal Opportunity Difference = {}".format(metric2.equal_opportunity_difference()))
+        print("Average Odds Difference = {}".format(metric2.average_odds_difference()))
+    
+    print("Theil Index = {}".format(metric2.theil_index()))
+
+    # if opt == True:
+    #     fairness_scores = fairness_scores = [metric1.mean_difference(), metric2.disparate_impact(), np.nan, np.nan, metric2.theil_index()]
+    # else:
+    #     fairness_scores = [metric1.mean_difference(), metric2.disparate_impact(), metric2.equal_opportunity_difference(), metric2.average_odds_difference(), metric2.theil_index()]
+
+    # return fairness_scores
+
 
 def main():
     # load dataset
@@ -100,12 +126,57 @@ def main():
     calculate_accuracy(test1, pred_adversarial1, pred_prejudice1, pred_nondebiased1, pred_ensemble1)
     print()
 
+    # calculate fairness metrics
+    print('Fairness metrics for Adult dataset')
+    print('    Adversarial Debiasing')
+    fairness_metrics(test1, pred_adversarial1, unprivileged_groups1, privileged_groups1, False)
+    print()
+    print('    Prejudice Remover')
+    fairness_metrics(test1, pred_prejudice1, unprivileged_groups1, privileged_groups1, True)
+    print()
+    print('    Nondebiasing')
+    fairness_metrics(test1, pred_nondebiased1, unprivileged_groups1, privileged_groups1, False)
+    print()
+    print('    Ensemble')
+    fairness_metrics(test1, pred_ensemble1, unprivileged_groups1, privileged_groups1, False)
+    print()
+
     print('       Classification using Compas dataset')
     calculate_accuracy(test2, pred_adversarial2, pred_prejudice2, pred_nondebiased2, pred_ensemble2)
+    print()
+    
+    # calculate fairness metrics
+    print('Fairness metrics for Compas dataset')
+    print('    Adversarial Debiasing')
+    fairness_metrics(test2, pred_adversarial2, unprivileged_groups2, privileged_groups2, False)
+    print()
+    print('    Prejudice Remover')
+    fairness_metrics(test2, pred_prejudice2, unprivileged_groups2, privileged_groups2, True)
+    print()
+    print('    Nondebiasing')
+    fairness_metrics(test2, pred_nondebiased2, unprivileged_groups2, privileged_groups2, False)
+    print()
+    print('    Ensemble')
+    fairness_metrics(test2, pred_ensemble2, unprivileged_groups2, privileged_groups2, False)
     print()
 
     print('      Classification using German dataset')
     calculate_accuracy(test3, pred_adversarial3, pred_prejudice3, pred_nondebiased3, pred_ensemble3)
+    print()
+    
+    # calculate fairness metrics
+    print('Fairness metrics for German dataset')
+    print('    Adversarial Debiasing')
+    fairness_metrics(test3, pred_adversarial3, unprivileged_groups3, privileged_groups3, False)
+    print()
+    print('    Prejudice Remover')
+    fairness_metrics(test3, pred_prejudice3, unprivileged_groups3, privileged_groups3, True)
+    print()
+    print('    Nondebiasing')
+    fairness_metrics(test3, pred_nondebiased3, unprivileged_groups3, privileged_groups3, False)
+    print()
+    print('    Ensemble')
+    fairness_metrics(test3, pred_ensemble3, unprivileged_groups3, privileged_groups3, False)
     print()
 
     # save output to csv files
