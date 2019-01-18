@@ -12,10 +12,6 @@ setwd("/Users/zahrafitrianti/Documents/ML18")
 rew <- read.csv("df_compas_reweigh.csv")
 non_rew <- read.csv("df_compas_nonreweigh.csv")
 
-# remove eq_opp_diff and avg_odds_diff for now
-# rew <- rew[-c(4,5), ]
-# non_rew <- non_rew[-c(4,5), ]
-
 status <- c("Non-Reweigh","Non-Reweigh","Non-Reweigh","Non-Reweigh","Non-Reweigh","Non-Reweigh")
 non_rew$Status <- status
 status <- c("Reweigh","Reweigh","Reweigh","Reweigh","Reweigh","Reweigh")
