@@ -3,7 +3,7 @@ library(reshape2)
 library(plyr)
 library(dplyr)
 
-setwd("/Users/zahrafitrianti/Documents/ML18")
+setwd("/home/manvi/Documents/ML18-ensemble")
 
 # add these lines to your python code
 # df_compas_reweigh.to_csv("df_compas_reweigh.csv", encoding='utf-8')
