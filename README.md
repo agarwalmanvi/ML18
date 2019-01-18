@@ -25,7 +25,7 @@ pip install -r requirements.txt
 
 ### Project source codes
 * [dataset](dataset/): a folder which contains the three original data sets used in this project (Adult, Compas, German)
-* [result](result/): folder which stores all the results in csv format
+* [results](results/): folder which stores all the results in csv format
 * [codes](codes/): original code for the three classifiers and ensemble. There is an output folder which stores the output data after classification
 
 ### Testing examples
