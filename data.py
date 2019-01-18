@@ -34,4 +34,6 @@ preprocessed_data = StandardDataset(adult_data, label_name, favorable_classes=['
                                     metadata={'label_map': [{1.0: '>50K', 0.0: '<=50K'}],
                                     'protected_attribute_map': [protected_attribute_map[x] for x in protected_attribute]})
 
-print(preprocessed_data)
+# print(preprocessed_data)
+
+print(preprocessed_data.unfavorable_label)
