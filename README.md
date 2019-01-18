@@ -13,7 +13,8 @@ conda activate aif360
 or `source activate aif360` for older version of conda\
 or `activate aif360` for Windows.\
 To deactivate the environment, type
-``` conda deactivate
+```
+conda deactivate
 ```
 or similarly `source deactivate`, or `deactivate`
 
@@ -29,7 +30,7 @@ pip install -r requirements.txt
 * [codes](codes/): original code for the three classifiers and ensemble. There is an output folder which stores the output data after classification
 
 ### Testing examples
-* demo.ipynb : script for demo. Store results for accuracy and fairness metrics as a dataframe for all classifiers.
-* demo.R : script for the plots of the results.
-* alphaCalc.R : script for the alpha plot
-* metrics-test.ipynb : script for testing the empirically calculated fairness metrics
+* [demo.ipynb](demo.ipynb) : script for demo. Store results for accuracy and fairness metrics as a dataframe for all classifiers.
+* [demo.R](demo.R) : script for the plots of the results.
+* [alphaCalc.R](alphaCalc.R) : script for the alpha plot
+* [metrics-test.ipynb](metrics-test.ipynb) : script for testing the empirically calculated fairness metrics
