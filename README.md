@@ -25,12 +25,16 @@ pip install -r requirements.txt
 ```
 
 ### Project source codes
-* [dataset](dataset/): a folder which contains the three original data sets used in this project (Adult, Compas, German)
-* [results](results/): folder which stores all the results in csv format
-* [codes](codes/): original code for the three classifiers and ensemble. There is an output folder which stores the output data after classification
+* [dataset](dataset/) : a folder which contains the three original data sets used in this project (Adult, Compas, German)
+* [results](results/) : folder which stores all the results in csv format
+* [codes](codes/) : original code for the three classifiers and ensemble. There is an output folder which stores the output data after classification
 
 ### Testing examples
+To test the codes, it is required that you activate the virtual environment.
+* [run_adult.py](codes/run_adult.py) : script to run the project with Adult dataset. To run the script, type `python run_adult.py`
+* [run_compas.py](codes/run_compas.py) : script to run the project with Compas dataset. To run the script, type `python run_compas. py` 
+* [run_german.py](codes/run_german.py) : script to run the project with German dataset. To run the script, type `python run_german.py`\
+The three files above save the output (accuracy and fairness scores for multiple runs) to a csv file stored in the [results](results/) folder.\
 * [demo.ipynb](demo.ipynb) : script for demo. Store results for accuracy and fairness metrics as a dataframe for all classifiers.
-* [demo.R](demo.R) : script for the plots of the results.
-* [alphaCalc.R](alphaCalc.R) : script for the alpha plot
-* [metrics-test.ipynb](metrics-test.ipynb) : script for testing the empirically calculated fairness metrics
+* [demo.R](demo.R) : script for plotting the results.
+* [alphaCalc.R](alphaCalc.R) : script to create the alpha plot
