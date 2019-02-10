@@ -6,6 +6,7 @@ import pandas as pd
 import os
 import errno
 from preprocess import reweighing_data
+from preprocess import preprocess_adultdataset
 from main import run, compile_metrics, accuracy_dataframe, fairness_metrics_dataframe
 
 
@@ -13,23 +14,23 @@ def save_output(df_accuracy_reweigh, adversarial_reweigh, prejudice_reweigh, neu
                 df_accuracy_nonreweigh, adversarial_nonreweigh, prejudice_nonreweigh, neural_network_nonreweigh, ensemble_nonreweigh):
 
     try:
-        os.makedirs('results/adult/reweighed')
-        os.makedirs('results/adult/non-reweighed')
+        os.makedirs('../results/adult/reweighed')
+        os.makedirs('../results/adult/non-reweighed')
     except OSError as e:
         if e.errno != errno.EEXIST:
             pass
 
-    df_accuracy_reweigh.to_csv("results/adult/reweighed/accuracy.csv", encoding='utf-8')
-    adversarial_reweigh.to_csv("results/adult/reweighed/adversarial.csv", encoding='utf-8')
-    prejudice_reweigh.to_csv("results/adult/reweighed/prejudice.csv", encoding='utf-8')
-    neural_network_reweigh.to_csv("results/adult/reweighed/neural_net.csv", encoding='utf-8')
-    ensemble_reweigh.to_csv("results/adult/reweighed/ensemble.csv", encoding='utf-8')
+    df_accuracy_reweigh.to_csv("../results/adult/reweighed/accuracy.csv", encoding='utf-8')
+    adversarial_reweigh.to_csv("../results/adult/reweighed/adversarial.csv", encoding='utf-8')
+    prejudice_reweigh.to_csv("../results/adult/reweighed/prejudice.csv", encoding='utf-8')
+    neural_network_reweigh.to_csv("../results/adult/reweighed/neural_net.csv", encoding='utf-8')
+    ensemble_reweigh.to_csv("../results/adult/reweighed/ensemble.csv", encoding='utf-8')
 
-    df_accuracy_nonreweigh.to_csv("results/adult/non-reweighed/accuracy.csv", encoding='utf-8')
-    adversarial_nonreweigh.to_csv("results/adult/non-reweighed/adversarial.csv", encoding='utf-8')
-    prejudice_nonreweigh.to_csv("results/adult/non-reweighed/prejudice.csv", encoding='utf-8')
-    neural_network_nonreweigh.to_csv("results/adult/non-reweighed/neural_net.csv", encoding='utf-8')
-    ensemble_nonreweigh.to_csv("results/adult/non-reweighed/ensemble.csv", encoding='utf-8')
+    df_accuracy_nonreweigh.to_csv("../results/adult/non-reweighed/accuracy.csv", encoding='utf-8')
+    adversarial_nonreweigh.to_csv("../results/adult/non-reweighed/adversarial.csv", encoding='utf-8')
+    prejudice_nonreweigh.to_csv("../results/adult/non-reweighed/prejudice.csv", encoding='utf-8')
+    neural_network_nonreweigh.to_csv("../results/adult/non-reweighed/neural_net.csv", encoding='utf-8')
+    ensemble_nonreweigh.to_csv("../results/adult/non-reweighed/ensemble.csv", encoding='utf-8')
     print("Saved all outputs to csv")
 
 
@@ -37,6 +38,10 @@ def main():
     
     # load dataset
     data = load_preproc_data_adult()
+
+    # uncomment the following lines to load data from the csv and uncomment line 9
+    # df = pd.read_csv('../dataset/adult.csv')
+    # data = preprocess_adultdataset(df)
 
     # define priviledged and unpriviledged groups
     privileged_groups = [{'sex': 1}]

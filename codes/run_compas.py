@@ -11,22 +11,22 @@ def save_output(df_accuracy_reweigh, adversarial_reweigh, prejudice_reweigh, neu
                 df_accuracy_nonreweigh, adversarial_nonreweigh, prejudice_nonreweigh, neural_network_nonreweigh, ensemble_nonreweigh):
 
     try:
-        os.makedirs('results/compas/reweighed')
-        os.makedirs('results/compas/non-reweighed')
+        os.makedirs('../results/compas/reweighed')
+        os.makedirs('../results/compas/non-reweighed')
     except OSError as e:
         if e.errno != errno.EEXIST:
             pass
-    df_accuracy_reweigh.to_csv("results/compas/reweighed/accuracy.csv", encoding='utf-8')
-    adversarial_reweigh.to_csv("results/compas/reweighed/adversarial.csv", encoding='utf-8')
-    prejudice_reweigh.to_csv("results/compas/reweighed/prejudice.csv", encoding='utf-8')
-    neural_network_reweigh.to_csv("results/compas/reweighed/neural_net.csv", encoding='utf-8')
-    ensemble_reweigh.to_csv("results/compas/reweighed/ensemble.csv", encoding='utf-8')
+    df_accuracy_reweigh.to_csv("../results/compas/reweighed/accuracy.csv", encoding='utf-8')
+    adversarial_reweigh.to_csv("../results/compas/reweighed/adversarial.csv", encoding='utf-8')
+    prejudice_reweigh.to_csv("../results/compas/reweighed/prejudice.csv", encoding='utf-8')
+    neural_network_reweigh.to_csv("../results/compas/reweighed/neural_net.csv", encoding='utf-8')
+    ensemble_reweigh.to_csv("../results/compas/reweighed/ensemble.csv", encoding='utf-8')
 
-    df_accuracy_nonreweigh.to_csv("results/compas/non-reweighed/accuracy.csv", encoding='utf-8')
-    adversarial_nonreweigh.to_csv("results/compas/non-reweighed/adversarial.csv", encoding='utf-8')
-    prejudice_nonreweigh.to_csv("results/compas/non-reweighed/prejudice.csv", encoding='utf-8')
-    neural_network_nonreweigh.to_csv("results/compas/non-reweighed/neural_net.csv", encoding='utf-8')
-    ensemble_nonreweigh.to_csv("results/compas/non-reweighed/ensemble.csv", encoding='utf-8')
+    df_accuracy_nonreweigh.to_csv("../results/compas/non-reweighed/accuracy.csv", encoding='utf-8')
+    adversarial_nonreweigh.to_csv("../results/compas/non-reweighed/adversarial.csv", encoding='utf-8')
+    prejudice_nonreweigh.to_csv("../results/compas/non-reweighed/prejudice.csv", encoding='utf-8')
+    neural_network_nonreweigh.to_csv("../results/compas/non-reweighed/neural_net.csv", encoding='utf-8')
+    ensemble_nonreweigh.to_csv("../results/compas/non-reweighed/ensemble.csv", encoding='utf-8')
     print("Saved all outputs to csv")
 
 def main():
