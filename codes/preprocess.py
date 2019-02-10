@@ -1,6 +1,5 @@
 from aif360.datasets import StandardDataset
 from aif360.algorithms.preprocessing.reweighing import Reweighing
-from aif360.algorithms.preprocessing.optim_preproc_helpers.data_preproc_functions import load_preproc_data_adult, load_preproc_data_compas, load_preproc_data_german
 import pandas as pd
 import numpy as np
 import copy
@@ -192,16 +191,3 @@ def reweighing_data(train, unprivileged_group, privileged_group):
     train_transformed.instance_weights = np.ones(train_transformed.features.shape[0])
 
     return train_transformed
-
-def preprocess_data(df, unprivileged_group, privileged_group, name):
-    if name == 'adult':
-        data = preprocess_adultdataset(df)
-    elif name == 'compas':
-        data = preprocess_compasdataset(df)
-    elif name == 'german':
-        data = preprocess_germandataset(df)
-    
-    train, test = data.split([0.7], shuffle=True)
-    train_transformed = reweighing_data(train, unprivileged_group, privileged_group)
-
-    return train_transformed, test
