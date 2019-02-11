@@ -4,7 +4,8 @@ library(plyr)
 library(dplyr)
 library(Rmisc)
 
-setwd("/home/manvi/Documents/ML18-ensemble")
+this.dir <- dirname(parent.frame(2)$ofile)
+setwd(this.dir)
 
 rew <- read.csv("results/df_german_reweigh.csv")
 non_rew <- read.csv("results/df_german_nonreweigh.csv")
