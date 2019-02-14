@@ -43,7 +43,7 @@ def main():
     # unprivileged_groups = [{'race': 0}]
 
     # set the number of runs for testing
-    runs = 1
+    runs = 10
 
     # run with reweighing
     accuracy_reweigh, fairness_metrics_reweigh = run(data, runs, privileged_groups, unprivileged_groups, True)
