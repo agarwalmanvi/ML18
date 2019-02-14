@@ -30,11 +30,22 @@ pip install -r requirements.txt
 * [codes](codes/) : original code for the three classifiers and ensemble. There is an output folder which stores the output data after classification
 
 ### Testing examples
-To test the codes, it is required that you activate the virtual environment.
-* [run_adult.py](codes/run_adult.py) : script to run the project with Adult dataset. To run the script, type `python run_adult.py`
-* [run_compas.py](codes/run_compas.py) : script to run the project with Compas dataset. To run the script, type `python run_compas. py` 
-* [run_german.py](codes/run_german.py) : script to run the project with German dataset. To run the script, type `python run_german.py`\
-The three files above save the output (accuracy and fairness scores for multiple runs) to a csv file stored in the [results](results/) folder.
+To test the codes, first you need to activate the environment, then go to the codes directory.
+```
+source activate aif360
+cd codes
+```
+We have three scripts which run the project for three different datasets.
+* [run_adult.py](codes/run_adult.py) : script to run the project with Adult dataset.
+* [run_compas.py](codes/run_compas.py) : script to run the project with Compas dataset.
+* [run_german.py](codes/run_german.py) : script to run the project with German dataset.\
+\
+To run one of the above files, type:
+```
+python run_<adult/compas/german>.py
+```
+The three files above save the output (accuracy and fairness scores for multiple runs) to a csv file stored in the results folder.
+* [analysis-compas.R](analysis-compas.R) : script for plotting the results obtained from the previous step.
+* [alphaCalc.R](alphaCalc.R) : script to create the alpha plot which shows combined scores of accuracy and fairness.\
+You can also simply run the demo code in jupyter notebook.
 * [demo.ipynb](demo.ipynb) : script for demo. Store results for accuracy and fairness metrics as a dataframe for all classifiers.
-* [demo.R](demo.R) : script for plotting the results.
-* [alphaCalc.R](alphaCalc.R) : script to create the alpha plot

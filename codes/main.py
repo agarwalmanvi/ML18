@@ -42,6 +42,7 @@ def run(data, runs, privileged_groups, unprivileged_groups, reweigh_option):
 
     # perform classification for several runs
     for i in range(0, runs):
+        print('run =', i+1)
 
         # split data to training and testing sets
         train, test = data.split([0.7], shuffle=True)
@@ -96,8 +97,7 @@ def fairness_metrics_dataframe(runs, fairness_metrics_nonreweigh):
 
     metrics_adversarial, metrics_prejudice, metrics_nondebiasing, metrics_ensemble = compile_metrics(runs, fairness_metrics_nonreweigh)
 
-    # columns = ['Mean Difference', 'Disparate Impact', 'Equal Opportunity Difference', 'Average Odds Difference', 'Theil Index']
-    columns = ['Mean Difference', 'Disparate Impact', 'Theil Index']
+    columns = ['Mean Difference', 'Disparate Impact', 'Equal Opportunity Difference', 'Average Odds Difference', 'Theil Index']
     df_adversarial = pd.DataFrame(metrics_adversarial, columns=columns)
     df_prejudice = pd.DataFrame(metrics_prejudice, columns=columns)
     df_neural_network = pd.DataFrame(metrics_nondebiasing, columns=columns)

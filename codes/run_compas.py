@@ -1,10 +1,10 @@
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
-
+from aif360.algorithms.preprocessing.optim_preproc_helpers.data_preproc_functions import load_preproc_data_compas
 import pandas as pd
 import os
 import errno
-from preprocess import preprocess_compasdataset, reweighing_data
+from preprocess import reweighing_data
 from main import run, accuracy_dataframe, fairness_metrics_dataframe
 
 def save_output(df_accuracy_reweigh, adversarial_reweigh, prejudice_reweigh, neural_network_reweigh, ensemble_reweigh,
@@ -32,14 +32,15 @@ def save_output(df_accuracy_reweigh, adversarial_reweigh, prejudice_reweigh, neu
 def main():
 
     # load dataset
-    df = pd.read_csv('../dataset/compas-scores-two-years.csv')
-
-    # transform data to StandardDataset object
-    data = preprocess_compasdataset(df)
+    data = load_preproc_data_compas()
 
     # define priviledged and unpriviledged groups
     privileged_groups = [{'sex': 1}]
     unprivileged_groups = [{'sex': 0}]
+
+    # uncomment the following lines to test it with race
+    # privileged_groups = [{'race': 1}]
+    # unprivileged_groups = [{'race': 0}]
 
     # set the number of runs for testing
     runs = 10

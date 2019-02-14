@@ -1,6 +1,7 @@
 from aif360.algorithms.inprocessing import PrejudiceRemover
 from sklearn.metrics import accuracy_score
 from aif360.metrics import BinaryLabelDatasetMetric, ClassificationMetric
+from metrics import equal_opp_diff, avg_odds_diff
 import math
 from metrics import equal_opp_diff, avg_odds_diff
 
@@ -18,15 +19,14 @@ def prejudice(train, test, unprivileged_groups, privileged_groups):
     # calculate fairness metrics
     metric_test = BinaryLabelDatasetMetric(pred_prejudice, unprivileged_groups=unprivileged_groups, privileged_groups=privileged_groups)
     acc_test = ClassificationMetric(test, pred_prejudice, unprivileged_groups=unprivileged_groups, privileged_groups=privileged_groups)
-    # equal_opportunity_difference = equal_opp_diff(test, test_prejudice, 'sex', privileged=1, unprivileged=0, favourable=1, unfavourable=0)
-    # average_odds_difference = avg_odds_diff(test, test_prejudice, 'sex', privileged=1, unprivileged=0, favourable=1, unfavourable=0)
+    equal_opportunity_difference = equal_opp_diff(test, pred_prejudice, 'sex', privileged=1, unprivileged=0, favourable=1, unfavourable=0)
+    average_odds_difference = avg_odds_diff(test, pred_prejudice, 'sex', privileged=1, unprivileged=0, favourable=1, unfavourable=0)
     
     if acc_test.disparate_impact() == math.inf:
         disparate_impact = 5.0
     else:
         disparate_impact = acc_test.disparate_impact()
     
-    # metrics = [metric_test.mean_difference(), disparate_impact, equal_opportunity_difference, average_odds_difference, acc_test.theil_index()]
-    metrics = [metric_test.mean_difference(), disparate_impact, acc_test.theil_index()]
+    metrics = [metric_test.mean_difference(), disparate_impact, equal_opportunity_difference, average_odds_difference, acc_test.theil_index()]
 
     return pred_prejudice, accuracy, metrics
