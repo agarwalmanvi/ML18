@@ -7,11 +7,15 @@ def output_rates(input_data, output_data, attribute_name, privileged=None, unpri
     unprivileged = float(unprivileged)
     
     input_priv = input_data.labels[np.where(input_data.features[:,index_attribute] == privileged)]
+    input_priv = np.reshape(input_priv, (input_priv.shape[0],1))
     output_priv = output_data.labels[np.where(output_data.features[:,index_attribute] == privileged)]
+    output_priv = np.reshape(output_priv, (output_priv.shape[0],1))
     priv_labels = np.concatenate((input_priv, output_priv), axis=1)
     
     input_unpriv = input_data.labels[np.where(input_data.features[:,index_attribute] == unprivileged)]
+    input_unpriv = np.reshape(input_unpriv, (input_unpriv.shape[0],1))
     output_unpriv = output_data.labels[np.where(output_data.features[:,index_attribute] == unprivileged)]
+    output_unpriv = np.reshape(output_unpriv, (output_unpriv.shape[0],1))
     unpriv_labels = np.concatenate((input_unpriv, output_unpriv), axis=1)
     
     tp = 0

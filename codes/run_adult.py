@@ -6,7 +6,6 @@ import pandas as pd
 import os
 import errno
 from preprocess import reweighing_data
-from preprocess import preprocess_adultdataset
 from main import run, compile_metrics, accuracy_dataframe, fairness_metrics_dataframe
 
 
@@ -39,13 +38,13 @@ def main():
     # load dataset
     data = load_preproc_data_adult()
 
-    # uncomment the following lines to load data from the csv and uncomment line 9
-    # df = pd.read_csv('../dataset/adult.csv')
-    # data = preprocess_adultdataset(df)
-
     # define priviledged and unpriviledged groups
     privileged_groups = [{'sex': 1}]
     unprivileged_groups = [{'sex': 0}]
+
+    # uncomment the following lines to test it with race
+    # privileged_groups = [{'race': 1}]
+    # unprivileged_groups = [{'race': 0}]
 
     # set the number of runs
     runs = 10

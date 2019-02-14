@@ -1,6 +1,6 @@
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
-
+from aif360.algorithms.preprocessing.optim_preproc_helpers.data_preproc_functions import load_preproc_data_german
 import pandas as pd
 import os
 import errno
@@ -43,6 +43,10 @@ def main():
     privileged_groups = [{'sex': 1}]
     unprivileged_groups = [{'sex': 0}]
 
+    # uncomment the following lines to test it with age
+    # privileged_groups = [{'age': 1}]
+    # unprivileged_groups = [{'age': 0}]
+
     # set the number of runs for testing
     runs = 10
 
@@ -63,7 +67,6 @@ def main():
     # save output to csv
     save_output(df_accuracy_reweigh, adversarial_reweigh, prejudice_reweigh, neural_network_reweigh, ensemble_reweigh,
                 df_accuracy_nonreweigh, adversarial_nonreweigh, prejudice_nonreweigh, neural_network_nonreweigh, ensemble_nonreweigh)
-
     
 
 if __name__ == "__main__":

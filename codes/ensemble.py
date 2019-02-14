@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.metrics import accuracy_score
 from aif360.metrics import BinaryLabelDatasetMetric, ClassificationMetric
+from metrics import equal_opp_diff, avg_odds_diff
 from scipy.stats import mode
     
 def ensemble(test, pred_adversarial, pred_prejudice, pred_nondebiased, unprivileged_groups, privileged_groups):
@@ -16,7 +17,9 @@ def ensemble(test, pred_adversarial, pred_prejudice, pred_nondebiased, unprivile
 
     metric_test = BinaryLabelDatasetMetric(pred_ensemble, unprivileged_groups=unprivileged_groups, privileged_groups=privileged_groups)
     acc_test = ClassificationMetric(test, pred_ensemble, unprivileged_groups=unprivileged_groups, privileged_groups=privileged_groups)
-    # metrics = [metric_test.mean_difference(),acc_test.disparate_impact(), acc_test.equal_opportunity_difference(), acc_test.average_odds_difference(), acc_test.theil_index()]
-    metrics = [metric_test.mean_difference(),acc_test.disparate_impact(), acc_test.theil_index()]
+    equal_opportunity_difference = equal_opp_diff(test, pred_ensemble, 'sex', privileged=1, unprivileged=0, favourable=1, unfavourable=0)
+    average_odds_difference = avg_odds_diff(test, pred_ensemble, 'sex', privileged=1, unprivileged=0, favourable=1, unfavourable=0)
+
+    metrics = [metric_test.mean_difference(), acc_test.disparate_impact(), equal_opportunity_difference, average_odds_difference, acc_test.theil_index()]
 
     return accuracy, metrics
