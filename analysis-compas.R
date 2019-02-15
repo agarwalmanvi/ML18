@@ -28,8 +28,8 @@ prejRew <- read.csv("prejudice.csv")
 ################# Helper functions ##############
 
 fmt_dcimals <- function(decimals=0){
-  # return a function responpsible for formatting the 
-  # axis labels with a given number of decimals 
+  # return a function responpsible for formatting the
+  # axis labels with a given number of decimals
   function(x) as.character(round(x,decimals))
 }
 
@@ -49,7 +49,7 @@ accuracy_summary <- summarySE(accuracy, measurevar = "values", groupvars = c("co
 nonrew_df <- accuracy[accuracy$condition == "non-reweighed", ]
 rew_df <- accuracy[accuracy$condition == "reweighed", ]
 
-accuracy_plot <- ggplot(accuracy_summary, aes(x=factor(ind), y=values, fill=condition)) + 
+accuracy_plot <- ggplot(accuracy_summary, aes(x=factor(ind), y=values, fill=condition)) +
   geom_bar(position=position_dodge(0.9), stat="identity",
            colour="black", # Use black outlines,
            size=.3) +      # Thinner lines
@@ -57,7 +57,8 @@ accuracy_plot <- ggplot(accuracy_summary, aes(x=factor(ind), y=values, fill=cond
   scale_x_discrete(labels = c("Adversarial\nDebiasing", "Multilayer\nPerceptron", "Prejudice\nRemover","Ensemble\nClassifier")) +
   geom_point(data=rew_df, position = position_nudge(x=0.22), size=3, alpha=0.6, shape=18, show.legend = FALSE) +
   geom_point(data=nonrew_df, position = position_nudge(x=-0.22), size=3, alpha=0.6, shape=18, show.legend = FALSE) +
-  theme(legend.position = c(0.82,0.9),
+  theme(text = element_text(size=15),
+        legend.position = c(0.79,0.12),
         axis.ticks.x = element_blank(),
         axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0))) +
   labs(x="Algorithm", y="Accuracy")
@@ -84,10 +85,10 @@ mean_diff_summary <- summarySE(mean_diff, measurevar = "values", groupvars = c("
 nonrew_df <- mean_diff[mean_diff$condition == "non-reweighed", ]
 rew_df <- mean_diff[mean_diff$condition == "reweighed", ]
 
-mean_diff_plot <- ggplot(mean_diff_summary, aes(x=factor(ind), y=values, fill=condition)) + 
+mean_diff_plot <- ggplot(mean_diff_summary, aes(x=factor(ind), y=values, fill=condition)) +
   geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = -0.1, ymax = 0.1),
             fill = "palegreen2", alpha = 0.2,color = NA) +
-  geom_hline(yintercept=0, 
+  geom_hline(yintercept=0,
              color = "darkgreen", size=1.5) +
   geom_bar(position=position_dodge(0.9), stat="identity",
            colour="black", # Use black outlines,
@@ -96,11 +97,12 @@ mean_diff_plot <- ggplot(mean_diff_summary, aes(x=factor(ind), y=values, fill=co
   scale_x_discrete(labels = c("Adversarial\nDebiasing", "Multilayer\nPerceptron", "Prejudice\nRemover","Ensemble\nClassifier")) +
   geom_point(data=rew_df, position = position_nudge(x=0.22), size=3, alpha=0.6, shape=18, show.legend = FALSE) +
   geom_point(data=nonrew_df, position = position_nudge(x=-0.22), size=3, alpha=0.6, shape=18, show.legend = FALSE) +
-  theme(legend.position = c(0.82,0.9),
+  theme(text = element_text(size=15),
+        legend.position = c(0.82,0.9),
         axis.ticks.x = element_blank(),
         axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0))) +
   labs(x="Algorithm", y="Mean Difference")
-  
+
 ############## Equal Opportunity Difference #####################
 
 eqopp_nonrew <- data.frame("advDebias" = advDebias$Equal.Opportunity.Difference,
@@ -123,7 +125,7 @@ eqopp_summary <- summarySE(eqopp, measurevar = "values", groupvars = c("conditio
 eqopp_plot <- ggplot(eqopp_summary, aes(x=factor(ind), y=values, fill=condition)) +
   geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = -0.1, ymax = 0.1),
             fill = "palegreen2", alpha = 0.2,color = NA) +
-  geom_hline(yintercept=0, 
+  geom_hline(yintercept=0,
              color = "darkgreen", size=1.5) +
   geom_bar(position=position_dodge(0.9), stat="identity",
            colour="black", # Use black outlines,
@@ -132,7 +134,8 @@ eqopp_plot <- ggplot(eqopp_summary, aes(x=factor(ind), y=values, fill=condition)
   scale_x_discrete(labels = c("Adversarial\nDebiasing", "Multilayer\nPerceptron", "Prejudice\nRemover","Ensemble\nClassifier")) +
   geom_point(data=eqopp_rew_long, position = position_nudge(x=0.22), size=3, alpha=0.6, shape=18, show.legend = FALSE) +
   geom_point(data=eqopp_nonrew_long, position = position_nudge(x=-0.22), size=3, alpha=0.6, shape=18, show.legend = FALSE) +
-  theme(legend.position = c(0.79,0.12),
+  theme(text = element_text(size=15),
+        legend.position = c(0.79,0.12),
         axis.ticks.x = element_blank(),
         axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0))) +
   labs(x="Algorithm", y="Equal Opportunity Difference")
@@ -159,7 +162,7 @@ avg_summary <- summarySE(avg, measurevar = "values", groupvars = c("condition", 
 avg_plot <- ggplot(avg_summary, aes(x=factor(ind), y=values, fill=condition)) +
   geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = -0.1, ymax = 0.1),
             fill = "palegreen2", alpha = 0.2,color = NA) +
-  geom_hline(yintercept=0, 
+  geom_hline(yintercept=0,
              color = "darkgreen", size=1.5) +
   geom_bar(position=position_dodge(0.9), stat="identity",
            colour="black", # Use black outlines,
@@ -168,7 +171,8 @@ avg_plot <- ggplot(avg_summary, aes(x=factor(ind), y=values, fill=condition)) +
   scale_x_discrete(labels = c("Adversarial\nDebiasing", "Multilayer\nPerceptron", "Prejudice\nRemover","Ensemble\nClassifier")) +
   geom_point(data=avg_rew_long, position = position_nudge(x=0.22), size=3, alpha=0.6, shape=18, show.legend = FALSE) +
   geom_point(data=avg_nonrew_long, position = position_nudge(x=-0.22), size=3, alpha=0.6, shape=18, show.legend = FALSE) +
-  theme(legend.position = c(0.79,0.12),
+  theme(text = element_text(size=15),
+        legend.position = c(0.79,0.12),
         axis.ticks.x = element_blank(),
         axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0))) +
   labs(x="Algorithm", y="Average Odds Difference")
@@ -195,7 +199,7 @@ disp_summary <- summarySE(disp, measurevar = "values", groupvars = c("condition"
 disp_plot <- ggplot(disp_summary, aes(x=factor(ind), y=values, fill=condition)) +
   geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = 0.8, ymax = 1.2),
             fill = "palegreen2", alpha = 0.2,color = NA) +
-  geom_hline(yintercept=1, 
+  geom_hline(yintercept=1,
              color = "darkgreen", size=1.5) +
   geom_bar(position=position_dodge(0.9), stat="identity",
            colour="black", # Use black outlines,
@@ -204,7 +208,8 @@ disp_plot <- ggplot(disp_summary, aes(x=factor(ind), y=values, fill=condition)) 
   scale_x_discrete(labels = c("Adversarial\nDebiasing", "Multilayer\nPerceptron", "Prejudice\nRemover","Ensemble\nClassifier")) +
   geom_point(data=disp_rew_long, position = position_nudge(x=0.22), size=3, alpha=0.6, shape=18, show.legend = FALSE) +
   geom_point(data=disp_nonrew_long, position = position_nudge(x=-0.22), size=3, alpha=0.6, shape=18, show.legend = FALSE) +
-  theme(legend.position = c(0.79,0.87),
+  theme(text = element_text(size=15),
+        legend.position = c(0.79,0.87),
         axis.ticks.x = element_blank(),
         axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
         axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0))) +
@@ -230,7 +235,7 @@ theil <- rbind(theil_nonrew_long, theil_rew_long)
 theil_summary <- summarySE(theil, measurevar = "values", groupvars = c("condition", "ind"))
 
 theil_plot <- ggplot(theil_summary, aes(x=factor(ind), y=values, fill=condition)) +
-  geom_hline(yintercept=0, 
+  geom_hline(yintercept=0,
              color = "darkgreen", size=1.5) +
   geom_bar(position=position_dodge(0.9), stat="identity",
            colour="black", # Use black outlines,
@@ -239,7 +244,8 @@ theil_plot <- ggplot(theil_summary, aes(x=factor(ind), y=values, fill=condition)
   scale_x_discrete(labels = c("Adversarial\nDebiasing", "Multilayer\nPerceptron", "Prejudice\nRemover","Ensemble\nClassifier")) +
   geom_point(data=theil_rew_long, position = position_nudge(x=0.22), size=3, alpha=0.6, shape=18, show.legend = FALSE) +
   geom_point(data=theil_nonrew_long, position = position_nudge(x=-0.22), size=3, alpha=0.6, shape=18, show.legend = FALSE) +
-  theme(legend.position = c(0.79,0.87),
+  theme(text = element_text(size=15),
+        legend.position = c(0.79,0.87),
         axis.ticks.x = element_blank(),
         axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
         axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0))) +
@@ -248,4 +254,4 @@ theil_plot <- ggplot(theil_summary, aes(x=factor(ind), y=values, fill=condition)
 ########## Multiplot ##################
 
 # include multiplot if grouping of graphs needed
-# multiplot(accuracy_plot, mean_diff_plot, avg_plot, eqopp_plot, disp_plot, theil_plot, cols=3)
+multiplot(accuracy_plot, mean_diff_plot, avg_plot, eqopp_plot, disp_plot, theil_plot, cols=3)
