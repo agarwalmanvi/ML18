@@ -101,7 +101,7 @@ mean_diff_plot <- ggplot(mean_diff_summary, aes(x=factor(ind), y=values, fill=co
         legend.position = c(0.82,0.9),
         axis.ticks.x = element_blank(),
         axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0))) +
-  labs(x="Algorithm", y="Mean Difference")
+  labs(x="Algorithm", y="Statistical Parity Difference")
 
 ############## Equal Opportunity Difference #####################
 
